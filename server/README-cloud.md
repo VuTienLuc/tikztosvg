@@ -13,7 +13,7 @@ python3 server/server.py          # cần latex + dvisvgm trong PATH
 | `PORT` | `8765` | Cổng (Render và Cloud Run tự đặt biến này) |
 | `HOST` | `127.0.0.1` (Docker: `0.0.0.0`) | Địa chỉ lắng nghe |
 | `API_TOKEN` | (trống) | Nếu đặt, yêu cầu phải gửi header `X-Token` khớp |
-| `ALLOW_ORIGIN` | `*` | Trang được gọi máy chủ; có thể đặt `https://vutienluc.github.io` |
+| `ALLOW_ORIGIN` | `*` | Trang được gọi máy chủ; có thể đặt `https://tikztosvg.vercel.app` |
 | `MAX_JOBS` | `2` | Số hình biên dịch song song |
 | `TIMEOUT` | `40` | Số giây tối đa mỗi bước latex/dvisvgm |
 
@@ -22,7 +22,7 @@ python3 server/server.py          # cần latex + dvisvgm trong PATH
 ```bash
 gcloud run deploy tikz-svg --source server --region asia-southeast1 \
   --allow-unauthenticated --memory 1Gi \
-  --set-env-vars API_TOKEN=mat-khau-dai-kho-doan,ALLOW_ORIGIN=https://vutienluc.github.io
+  --set-env-vars API_TOKEN=mat-khau-dai-kho-doan,ALLOW_ORIGIN=https://tikztosvg.vercel.app
 ```
 
 Cách khác là chạy thẳng image đã build sẵn: `--image ghcr.io/vutienluc/tikz-svg-server:latest`. Cloud Run chỉ nhận image từ một số kho, nên có thể cần sao chép image sang Artifact Registry trước.

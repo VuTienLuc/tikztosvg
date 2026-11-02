@@ -1,10 +1,10 @@
 # tikztosvg — TikZ → SVG Studio
 
-[![CI · Pages · Docker](https://github.com/VuTienLuc/tikztosvg/actions/workflows/ci.yml/badge.svg)](https://github.com/VuTienLuc/tikztosvg/actions/workflows/ci.yml)
+[![CI · Docker](https://github.com/VuTienLuc/tikztosvg/actions/workflows/ci.yml/badge.svg)](https://github.com/VuTienLuc/tikztosvg/actions/workflows/ci.yml)
 
 Studio chuyển mã TikZ thành **SVG tự chứa** cho bài giảng, phiếu học tập và website Toán. Chữ được chuyển thành path, nên hình không cần phông và không phụ thuộc mạng.
 
-**Mở Studio:** https://vutienluc.github.io/tikztosvg/
+**Mở Studio:** https://tikztosvg.vercel.app/
 
 Studio có hai bộ biên dịch:
 
@@ -25,7 +25,7 @@ Studio có hai bộ biên dịch:
 Mở **Terminal** rồi dán:
 
 ```bash
-bash -c "$(curl -fsSL https://vutienluc.github.io/tikztosvg/install-mac.sh)"
+bash -c "$(curl -fsSL https://tikztosvg.vercel.app/install-mac.sh)"
 ```
 
 Bộ cài làm lần lượt các việc sau:
@@ -37,7 +37,7 @@ Bộ cài làm lần lượt các việc sau:
 macOS sẽ hỏi mật khẩu máy khi cài TeX hoặc gói.
 
 - **Cập nhật** lên bản mới: chạy lại đúng lệnh trên.
-- **Gỡ cài đặt:** `bash -c "$(curl -fsSL https://vutienluc.github.io/tikztosvg/uninstall-mac.sh)"`
+- **Gỡ cài đặt:** `bash -c "$(curl -fsSL https://tikztosvg.vercel.app/uninstall-mac.sh)"`
 - **Nhật ký:** `~/Library/Logs/tikz-svg-server.log`
 
 ### Docker (Windows, Linux, Mac): tự bật cùng Docker
@@ -60,24 +60,25 @@ Muốn dùng Google Cloud Run thay Render: xem [server/README-cloud.md](server/R
 
 ## Trình duyệt
 
-Nên dùng **Chrome hoặc Edge**. Lần đầu trang trên GitHub Pages gọi máy chủ trên máy thầy, Chrome có thể hỏi *"Cho phép truy cập thiết bị trong mạng cục bộ?"*: chọn **Cho phép**.
+Nên dùng **Chrome hoặc Edge**. Lần đầu trang trên Vercel gọi máy chủ trên máy thầy, Chrome có thể hỏi *"Cho phép truy cập thiết bị trong mạng cục bộ?"*: chọn **Cho phép**.
 
 Nếu Safari chặn kết nối tới `127.0.0.1`, hãy tải `index.html` về máy và mở trực tiếp.
 
-## Tự động hoá trên GitHub
+## Tự động hoá
 
-Mỗi lần đẩy code lên nhánh `main`, workflow [`ci.yml`](.github/workflows/ci.yml) chạy ba bước:
+Mỗi lần đẩy code lên nhánh `main`:
 
-1. **Chạy thử:** cài TeX Live, biên dịch các hình mẫu (tiếng Việt, pgfplots, tkz-euclide, tikz-cd, tô màu chuyển sắc), kiểm tra các lệnh nguy hiểm bị chặn, kiểm tra cú pháp Studio.
-2. **Xuất bản:** đưa Studio, bộ cài Mac và `server.py` lên GitHub Pages.
-3. **Đóng gói:** build image Docker (amd64 + arm64) lên `ghcr.io`.
+1. **Vercel** tự xuất bản Studio, bộ cài Mac và `server/server.py` lên https://tikztosvg.vercel.app (theo [`vercel.json`](vercel.json)).
+2. **GitHub Actions** ([`ci.yml`](.github/workflows/ci.yml)) cài TeX Live và chạy thử máy chủ với hình thật: tiếng Việt, pgfplots, tkz-euclide, tikz-cd, tô màu chuyển sắc. Kiểm tra luôn việc chặn lệnh nguy hiểm và cú pháp Studio.
+3. Nếu bước chạy thử đạt, GitHub Actions build image Docker (amd64 + arm64) lên `ghcr.io`.
 
-Bước 2 và 3 chỉ chạy khi bước 1 đạt, nên bản lỗi không bao giờ đến tay người dùng.
+Bước chạy thử báo đỏ trên GitHub nghĩa là bản vừa đẩy có lỗi. Khi đó hãy sửa trước khi dùng bộ cài Mac mới.
 
 ## Cấu trúc
 
 ```
 index.html            Studio (một tệp HTML)
+vercel.json           Cấu hình xuất bản Vercel
 server/server.py      Máy chủ (Python thuần, không cần cài thư viện)
 server/Dockerfile     Image Docker
 install-mac.sh        Bộ cài Mac + tự chạy khi mở máy

@@ -1,11 +1,11 @@
 #!/bin/bash
 # Cài máy chủ TikZ → SVG trên macOS; máy chủ tự bật mỗi khi đăng nhập máy.
 # Chạy trong Terminal:
-#   bash -c "$(curl -fsSL https://vutienluc.github.io/tikztosvg/install-mac.sh)"
+#   bash -c "$(curl -fsSL https://tikztosvg.vercel.app/install-mac.sh)"
 # Chạy lại lệnh này bất cứ lúc nào để cập nhật lên bản mới nhất.
 set -euo pipefail
 
-BASE="${TIKZ_BASE:-https://vutienluc.github.io/tikztosvg}"
+BASE="${TIKZ_BASE:-https://tikztosvg.vercel.app}"
 PORT="${TIKZ_PORT:-8765}"
 LABEL="vn.vutienluc.tikz-svg-server"
 APP_DIR="$HOME/Library/Application Support/TikzSvgServer"
@@ -55,7 +55,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || echo
 if [ -f "$SCRIPT_DIR/server/server.py" ]; then
   cp "$SCRIPT_DIR/server/server.py" "$APP_DIR/server.py.new"          # chạy từ thư mục repo
 else
-  curl -fsSL "$BASE/server.py" -o "$APP_DIR/server.py.new" || fail "Không tải được $BASE/server.py"
+  curl -fsSL "$BASE/server/server.py" -o "$APP_DIR/server.py.new" || fail "Không tải được $BASE/server/server.py"
 fi
 "$PY" -m py_compile "$APP_DIR/server.py.new" || fail "Tệp server.py tải về bị hỏng."
 mv "$APP_DIR/server.py.new" "$APP_DIR/server.py"

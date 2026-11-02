@@ -1,9 +1,7 @@
-# Mỗi lần đẩy code lên nhánh main, workflow này chạy 3 bước:
+# Mỗi lần đẩy code lên nhánh main (trang web do Vercel tự xuất bản):
 #   1. test:   cài TeX Live, chạy thử máy chủ với hình thật, kiểm tra cú pháp Studio
-#   2. pages:  xuất bản Studio + bộ cài Mac lên GitHub Pages
-#   3. docker: đóng gói máy chủ thành image (Intel + Apple Silicon) lên ghcr.io
-# Bước 2 và 3 chỉ chạy khi bước 1 đạt.
-name: CI · Pages · Docker
+#   2. docker: nếu bước 1 đạt, đóng gói máy chủ thành image (Intel + Apple Silicon) lên ghcr.io
+name: CI · Docker
 
 on:
   push:
@@ -38,31 +36,6 @@ jobs:
 
       - name: Kiểm tra cú pháp JavaScript của Studio
         run: python3 tests/check_html.py index.html
-
-  pages:
-    name: Xuất bản Studio lên GitHub Pages
-    needs: test
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Gom các tệp xuất bản
-        run: |
-          mkdir _site
-          cp index.html install-mac.sh uninstall-mac.sh server/server.py _site/
-          touch _site/.nojekyll
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-      - id: deploy
-        uses: actions/deploy-pages@v4
 
   docker:
     name: Đóng gói image Docker (amd64 + arm64)
