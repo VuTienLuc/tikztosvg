@@ -1,0 +1,17 @@
+# Triển khai máy chủ lên Render.com bằng một cú bấm (nút "Deploy to Render" trong README).
+# Render tự build lại mỗi khi có commit mới trên nhánh main.
+services:
+  - type: web
+    name: tikz-svg-server
+    runtime: docker
+    plan: free
+    rootDir: server
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: API_TOKEN
+        generateValue: true   # Render tự tạo mật khẩu; xem trong tab Environment
+      - key: MAX_JOBS
+        value: "2"
